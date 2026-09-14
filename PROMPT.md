@@ -1,89 +1,89 @@
-# 可直接复制给 Codex / Claude Code 的完整 Prompt
+# Complete Prompt for Codex / Claude Code
 
-从下一行开始完整复制。
+Copy everything below this line into a new conversation.
 
 ---
 
-你要在当前项目中构建一个运行在 ZooWork 上的双语 AI 时尚顾问。目标是复刻 Stylist AI Insider 的核心能力，而不是复刻它的页面视觉。先把 Agent、Persona、Skills、ZooWork Runtime 和测试做好；UI 只做最小接入，或按我之后给出的偏好自由调整。
+Build a bilingual AI fashion stylist on ZooWork in the current project. The goal is to reproduce the core capabilities of Stylist AI Insider, not its visual design. Build and validate the Agent, Persona, Skills, ZooWork Runtime, and tests first. Keep the UI minimal, or customize it later according to my preferences.
 
-默认产品设定：
+Default product definition:
 
-- Agent 名称：Stylist
-- 服务市场：中国和美国
-- 用户语言：跟随用户的中文或英文
-- 核心入口：找单品、搭整套、AI 试穿、穿搭打分
-- 个性化：渐进式风格档案，但首轮使用不能被注册、问卷、自拍或完整档案阻塞
-- UI 偏好：不复制现有 demo 的视觉；核心能力通过后再决定使用 ZooWork App Kit 或自定义页面
-- 我的额外修改要求：无；如果我在这段 Prompt 后补充要求，以补充要求为准
+- Agent name: Stylist
+- Markets: China and the United States
+- User language: follow the user's Chinese or English
+- Core entry points: find a product, build a complete look, AI virtual try-on, and outfit scoring
+- Personalization: use a progressive style profile, but never block first use on registration, a quiz, a selfie, or a complete profile
+- UI preference: do not copy the existing demo's visual design; decide between ZooWork App Kit and a custom UI only after the core capabilities pass
+- My additional requirements: none; if I add requirements after this prompt, those requirements take precedence
 
-把以下文件当作业务能力的 source of truth：
+Treat these files as the source of truth for product behavior:
 
 - `agent/AGENTS.md`
 - `skills/fashion-product-search/SKILL.md`
 - `skills/fashion-outfit-builder/SKILL.md`
-- `skills/fashion-virtual-try-on/SKILL.md` 及其 references
-- `skills/fashion-fit-check/SKILL.md` 及其 references
+- `skills/fashion-virtual-try-on/SKILL.md` and its references
+- `skills/fashion-fit-check/SKILL.md` and its references
 - `skills/fashion-style-profile/SKILL.md`
 
-工作方式与顺序：
+Follow this workflow in order.
 
-## 0. 先安装并读取 ZooWork 官方开发 skill
+## 0. Install and read the official ZooWork development skill
 
-在写任何 ZooWork SDK 调用前，先运行：
+Before writing any ZooWork SDK call, run:
 
 ```bash
 npx skills add SerendipityOneInc/zoowork-sdk-skills
 ```
 
-然后完整读取 `zoowork-managed-agents` 的 `SKILL.md`，并按任务需要读取它指向的 `deploy-your-agent`、TypeScript SDK、events/streaming 和 not-supported references。如果官方仓库已经在当前项目中，直接读取本地版本，不要重复安装。
+Then read the complete `SKILL.md` for `zoowork-managed-agents`. Read its referenced `deploy-your-agent`, TypeScript SDK, events and streaming, and not-supported documents when relevant. If the official repository is already available in the current project, read that local copy instead of installing it again.
 
-这一步的 skill 是给开发助手用的；本仓库的 fashion skills 是稍后上传给 ZooWork Runtime 中 Agent 使用的。不要混淆两者。
+The official skill is for the development assistant. The fashion skills in this repository will later be uploaded to the Agent running in ZooWork Runtime. Do not confuse the two.
 
-## 1. 安全获取并验证 ZooWork API Key
+## 1. Obtain and validate a ZooWork API key safely
 
-先只检查 `ZOOWORK_API_KEY` 是否已配置，不要读取后输出它的值。
+Check only whether `ZOOWORK_API_KEY` is configured. Do not read and print its value.
 
-如果没有配置，暂停创建操作，并明确让我完成下面的动作：
+If it is missing, pause all Agent-creation operations and ask me to complete these steps:
 
-1. 登录 <https://zoowork.ai/claw-settings?tab=account-api-keys>；
-2. 打开 `Settings → API Keys → Create API Key`；
-3. 用部署环境命名，例如 `stylist-local` 或 `stylist-production`；
-4. 立即复制只显示一次的 `zct_...` 密钥；
-5. 由我亲自把它保存到本地 `.env` 的 `ZOOWORK_API_KEY`，不要粘贴到聊天中。
+1. Sign in at <https://zoowork.ai/claw-settings?tab=account-api-keys>.
+2. Open `Settings → API Keys → Create API Key`.
+3. Name the key after its deployment environment, such as `stylist-local` or `stylist-production`.
+4. Immediately copy the `zct_...` secret, which is displayed only once.
+5. Save it myself as `ZOOWORK_API_KEY` in a local `.env` file. I must not paste it into the chat.
 
-确保 `.env` 已被 `.gitignore` 忽略。API Key 不得写入 Prompt、源代码、前端代码、日志、构建产物或 Git 仓库。不要创建、轮换或删除密钥来替我完成这一步。
+Verify that `.env` is ignored by `.gitignore`. The API key must never be written into a prompt, source code, frontend code, logs, build artifacts, or Git history. Do not create, rotate, or delete a key on my behalf.
 
-我确认已保存后，用 `listModels()` 做最小只读验证。验证结果只报告成功/失败和可用模型数量，不显示密钥。若返回未授权，回到同一个 Settings 页面处理，不要猜测其他密钥接口。
+After I confirm that the key is saved, call `listModels()` as the smallest read-only validation. Report only success or failure and the number of available models. Never display the key. If authentication fails, return me to the same Settings page rather than guessing another key-management endpoint.
 
-## 2. 先设计，得到确认后再创建
+## 2. Design first and create only after approval
 
-阅读本仓库 Persona 与五个 skills，先输出一份紧凑设计方案，至少包含：
+Read the Persona and five skills in this repository. First produce a concise design proposal that includes:
 
-1. Persona 和双语语气；
-2. 五个 skills 的职责、触发条件和相互路由；
-3. 每个 skill 依赖的工具或参考资料；
-4. 数据保存范围和隐私边界；
-5. 至少 8 个真实测试题及验收标准；
-6. 仍然缺失、且会实质影响结果的信息。
+1. the Persona and bilingual voice;
+2. the responsibility, trigger conditions, and routing relationships of all five skills;
+3. the tools and references required by each skill;
+4. data-retention scope and privacy boundaries;
+5. at least eight realistic test prompts with acceptance criteria;
+6. any missing information that would materially change the implementation.
 
-这一阶段不要创建或修改 ZooWork Agent。设计足够明确时不要为了形式反复提问，只把真正会改变实现的选择交给我确认。
+Do not create or modify a ZooWork Agent during this phase. When the design is already clear, do not ask ceremonial questions. Ask only for choices that would materially change the implementation, then wait for my approval.
 
-## 3. 创建并启动 Agent
+## 3. Create and start the Agent
 
-得到我确认后，再严格按 `zoowork-managed-agents` 执行：
+After I approve the design, follow `zoowork-managed-agents` exactly:
 
-- 使用 `@zoowork-ai/sdk`，不要猜包名或调用形状；
-- 从 `listModels()` 的实际返回值选择模型；
-- 把 `agent/AGENTS.md` 作为 Persona 文档；
-- 创建前先检查本地是否已有保存的 `ZOOWORK_AGENT_ID`，以及是否能通过稳定 label 找到同一 Agent；
-- 只有确实不存在时才调用 `createAgent()`，并使用稳定的 idempotency key；
-- 创建成功后立即保存 `agent_id` 到被 Git 忽略的服务端配置；
-- Agent 是长期资源，只创建一次，绝不能放在每次用户消息的处理函数里；
-- 调用 `startAgent(agentId)`，再调用 `waitUntilRunning(agentId)`；不要用 `actual_state` 判断 API 是否可用。
+- Use `@zoowork-ai/sdk`. Do not guess the package name or API shapes.
+- Select a model from the actual response returned by `listModels()`.
+- Use `agent/AGENTS.md` as a Persona document.
+- Before creating anything, check for a saved `ZOOWORK_AGENT_ID` and try to resolve the same Agent through stable labels.
+- Call `createAgent()` only when that Agent genuinely does not exist, and use a stable idempotency key.
+- Save the returned `agent_id` immediately in ignored server-side configuration.
+- Treat an Agent as a persistent resource. Never create one inside the per-message request path.
+- Call `startAgent(agentId)`, followed by `waitUntilRunning(agentId)`. Do not use `actual_state` as the API-readiness signal.
 
-## 4. 打包、上传并绑定本仓库 skills
+## 4. Package, upload, and attach the repository skills
 
-依次处理：
+Process these skills:
 
 - `fashion-product-search`
 - `fashion-outfit-builder`
@@ -91,60 +91,60 @@ npx skills add SerendipityOneInc/zoowork-sdk-skills
 - `fashion-fit-check`
 - `fashion-style-profile`
 
-对每个 skill：
+For each skill:
 
-1. 验证目录名与 `SKILL.md` frontmatter 的 `name` 完全一致；
-2. 打包 zip 时保留同名顶层目录；
-3. 首次使用 `uploadSkill(..., { scope: 'org' | 'personal' })`；已有同名自有 skill 且内容有变化时按官方说明创建新版本，不要重复制造同名资源；
-4. 使用 `putAgentSkill(agentId, skillId)` 绑定；
-5. 用 `listAgentSkills(agentId, { verbose: true })` 验证已绑定、启用且 `eligible !== false`；
-6. 记录 skill id 和版本，但不要记录任何密钥。
+1. Verify that the directory name exactly matches the `name` in the `SKILL.md` frontmatter.
+2. Preserve that same directory as the zip's top-level directory.
+3. On first upload, use `uploadSkill(..., { scope: 'org' | 'personal' })`. When an owned skill with the same name already exists and the content changed, add a version according to the official documentation instead of creating duplicate resources.
+4. Attach it with `putAgentSkill(agentId, skillId)`.
+5. Verify with `listAgentSkills(agentId, { verbose: true })` that it is attached, enabled, and `eligible !== false`.
+6. Record its skill ID and version, but never record a secret.
 
-不要尝试重新上传或绑定 ZooWork 全局 catalog 中已经自动附带的 skills。
+Do not re-upload or attempt to attach global ZooWork catalog skills that a new Agent already receives automatically.
 
-## 5. 用真实任务验证“触发成功”，不只验证“上传成功”
+## 5. Validate real skill triggers, not only successful uploads
 
-至少完成以下测试：
+Run at least these tests:
 
-- 单品搜索：分别用 CN/CNY 与 US/USD 请求，验证直接商品页、当次价格、预算硬上限和无登录购买路径；
-- 整套穿搭：验证 `上装 + 下装 + 鞋` 或 `连体单品 + 鞋` 的完整核心槽位、同市场同货币、总价正确、天气和场合合理；
-- AI 试穿：用一张人物图和一张单品图，再用一张人物图和一套完整 look 图，确认只替换目标服饰、人物身份与场景保持、结果带 AI 预览声明；
-- 穿搭打分：验证评分有依据、建议可执行、轻度吐槽只针对衣服，不评价人或身体；
-- 风格档案：验证缺少档案时其他能力仍能首轮工作；当前请求覆盖旧偏好；照片不被默认持久化；
-- 多轮对话：验证换预算、换颜色、围绕搜索结果搭整套、再进入试穿的上下文连续性；
-- 安全与失败：验证不会编造商品、价格、库存、图片或链接；私密图片链接不会出现在回答中；工具失败时明确说明限制；
-- 连接恢复：按官方 event cursor 方式验证断开后的继续读取，并在 `isRunFinished(ev)` 时结束当前 turn 的 stream。
+- Product search: run separate CN/CNY and US/USD requests. Verify direct product pages, current prices, hard budget limits, and a purchase path that works without login.
+- Outfit building: verify a complete core of `top + bottom + shoes` or `one-piece + shoes`, one market and currency, a correct total, and sensible weather and occasion choices.
+- Virtual try-on: test one person image with one product image, then one person image with a complete-look reference. Verify that only the intended fashion items change, the person's identity and scene remain stable, and the result includes an AI-preview disclosure.
+- Fit check: verify evidence-based scoring, actionable advice, and lightly savage feedback that targets clothing rather than the person or body.
+- Style profile: verify that missing profile data does not block another skill's first turn, a current request overrides old preferences, and photos are not persisted by default.
+- Multi-turn behavior: change a budget and color, build an outfit around a search result, and continue into virtual try-on while preserving context.
+- Safety and failure behavior: verify that the Agent never invents products, prices, stock, images, or links; private image URLs never appear in responses; and tool failures are reported honestly.
+- Connection recovery: follow the official event-cursor pattern after a disconnect and stop the current turn's stream when `isRunFinished(ev)` is true.
 
-每个测试都记录：输入、期望触发的 skill、实际观察、通过/失败、失败原因和修改建议。若某个 skill 虽然显示已绑定但实际不触发，优先检查它的 frontmatter `description`。
+For every test, record the input, expected skill trigger, actual observation, pass or failure status, failure cause, and recommended change. If a skill is attached but does not trigger, inspect its frontmatter `description` first.
 
-未经我确认，不要为了修复测试而扩大产品范围或更改已确认的 Persona、安全边界和隐私策略。普通实现缺陷可以直接修复并重测。
+Do not expand the product scope or change an approved Persona, safety boundary, or privacy rule merely to make a test pass without my approval. Fix ordinary implementation defects directly and rerun the affected tests.
 
-## 6. UI 是可选交付层
+## 6. Treat UI as an optional delivery layer
 
-Agent 和五个 skills 全部通过后，再处理 UI：
+Handle UI only after the Agent and all five skills pass:
 
-- 如果我没有指定技术栈，先建议 ZooWork App Kit；
-- 页面固定到保存的 `ZOOWORK_AGENT_ID`，设置 `AGENT_PICKER=off`；
-- API Key 只存在服务端；
-- 支持多轮对话、流式响应、刷新恢复、用户隔离、额度限制和防刷；
-- 用户照片按临时私密输入处理，完成后删除，保存或分享必须单独征得同意；
-- 视觉风格、布局、品牌色和组件可以自由替换，不要把现有 demo 的 CSS 或页面结构当作能力依赖。
+- If I have not selected a stack, recommend ZooWork App Kit first.
+- Pin the page to the saved `ZOOWORK_AGENT_ID` and set `AGENT_PICKER=off`.
+- Keep the API key server-side only.
+- Support multi-turn conversations, streaming replies, refresh recovery, user isolation, usage limits, rate limiting, and abuse prevention.
+- Treat user photos as temporary private inputs and delete them after processing. Saving or sharing requires separate explicit consent.
+- Allow the visual style, layout, brand colors, and components to be replaced freely. Do not make the existing demo's CSS or page structure a capability dependency.
 
-如果我已有网站，就只提供清晰的后端 session/event 接入层，不要强迫迁移到 App Kit。
+If I already have a website, build only a clear backend session and event integration. Do not force a migration to App Kit.
 
-## 7. 发布前停一次
+## 7. Stop once before public release
 
-本地验收完成后，先向我报告：
+After local acceptance testing, report:
 
-- `agent_id`（可以显示）；
-- Runtime 状态；
-- 已绑定的 skill 名称、id、版本和资格状态；
-- 测试通过率、失败项和剩余风险；
-- 是否包含 UI，以及 API Key、用户数据、图片和会话的隔离方式；
-- 建议的发布方式。
+- the `agent_id`, which may be displayed;
+- Runtime status;
+- attached skill names, IDs, versions, and eligibility status;
+- test pass rate, failures, and remaining risks;
+- whether a UI is included and how the API key, user data, images, and sessions are isolated;
+- the recommended release method.
 
-在我明确确认前，不要公开部署页面或改变线上访问权限。确认发布后，部署并返回访问 URL，同时再次检查 Agent 连接、`AGENT_PICKER=off`、用户隔离、限额、防刷和密钥未进入客户端或 Git 历史。
+Do not deploy a public page or change production access until I explicitly approve it. After approval, deploy and return the public URL. Recheck Agent connectivity, `AGENT_PICKER=off`, user isolation, usage limits, rate limiting, and that the API key never entered the client or Git history.
 
-最终目标不是“代码能编译”，而是五个 skills 在 ZooWork Runtime 中被真实触发，四个核心用户任务可以稳定完成，且任何 UI 都只是可替换的交付层。
+The final goal is not code that merely compiles. All five skills must trigger in ZooWork Runtime, the four core user tasks must complete reliably, and any UI must remain a replaceable delivery layer.
 
 ---
