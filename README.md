@@ -7,8 +7,14 @@ A portable skill pack distilled from the core product capabilities of [Stylist A
 1. Clone this repository and open it in Codex or Claude Code.
 2. Copy the complete contents of [PROMPT.md](PROMPT.md) into a new conversation.
 3. Follow the instructions to sign in to ZooWork, create an API key under `Settings → API Keys`, and save it yourself in a local `.env` file. The API key is the only value you enter manually; never paste it into the chat.
-4. Let the coding agent create the Agent, automatically save its returned `agent_id`, upload and attach the skills, start the Runtime, and run real trigger tests.
-5. After the core capabilities pass, decide whether to use ZooWork App Kit or connect your own UI.
+4. Let the coding agent create the Agent, automatically save its returned `agent_id`, upload and attach the skills, start it on ZooWork Runtime, and run a bounded smoke test.
+5. Receive the running Agent status directly in the chat. The coding agent will then ask whether you want a UI; choose ZooWork App Kit, an existing frontend, or no UI.
+
+## Expected outcome
+
+The default deliverable is a persistent Stylist Agent running on ZooWork Runtime with all five skills attached. The setup assistant should report the Agent ID, skill status, smoke-test result, and any external limitation directly in the conversation. It should not create an acceptance-report Markdown file unless you explicitly ask for one.
+
+ZooWork Runtime hosts the Agent and its skills; it does not automatically create a public website. If you want an end-user interface, the assistant will offer to build one after the Runtime Agent is ready. A public UI is deployed only after you review and approve it.
 
 ## Included skills
 

@@ -33,6 +33,8 @@ For a complete look, every selected garment, layer, shoe, bag, and accessory mus
 
 Compare the result with both inputs. Reject it when identity changes materially, a selected garment is missing, an original garment remains in a replaced slot, the product category or color is wrong, anatomy is visibly broken, or an unselected item appears. A full-look output that changes only the top is incomplete.
 
+When the image tool starts an asynchronous job, treat its acknowledgement as progress rather than a finished try-on. Use the platform's supported wait, yield, or completion-event path and deliver the exact new image produced by that job. Do not call the image generator again while the original job is pending, and never mark the request complete with only a progress sentence. Finish with the generated image or a clear terminal failure. Treat an insufficient-credit response as terminal for the current request and do not spend repeated calls retrying it.
+
 Retry a failed structural edit at most once using the same inputs and roles. If it still fails, report the limitation rather than presenting an incorrect image.
 
 State clearly that the result is an AI preview and does not guarantee sizing, fit, fabric behavior, or exact real-world appearance. Offer the selected product links or one targeted refinement. Never make the result public until the user explicitly asks to share it.
