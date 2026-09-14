@@ -43,6 +43,8 @@ The official skill is for the development assistant. The fashion skills in this 
 
 Check only whether `ZOOWORK_API_KEY` is configured. Do not read and print its value.
 
+The API key is the only value I must enter manually. Never ask me to find, copy, paste, or configure an Agent ID. ZooWork returns the Agent ID after creation, and you must save and reuse it automatically.
+
 If it is missing, pause all Agent-creation operations and ask me to complete these steps:
 
 1. Sign in at <https://zoowork.ai/claw-settings?tab=account-api-keys>.
@@ -75,9 +77,9 @@ After I approve the design, follow `zoowork-managed-agents` exactly:
 - Use `@zoowork-ai/sdk`. Do not guess the package name or API shapes.
 - Select a model from the actual response returned by `listModels()`.
 - Use `agent/AGENTS.md` as a Persona document.
-- Before creating anything, check for a saved `ZOOWORK_AGENT_ID` and try to resolve the same Agent through stable labels.
+- Before creating anything, check your ignored local state for a previously generated `agent_id` and try to resolve the same Agent through stable labels. Do not ask me for this ID.
 - Call `createAgent()` only when that Agent genuinely does not exist, and use a stable idempotency key.
-- Save the returned `agent_id` immediately in ignored server-side configuration.
+- Save the returned `agent_id` automatically in ignored server-side configuration, for example `.zoowork/stylist-agent.json`. If the selected backend or App Kit expects `ZOOWORK_AGENT_ID`, populate that server-side value yourself from the saved result rather than asking me to enter it.
 - Treat an Agent as a persistent resource. Never create one inside the per-message request path.
 - Call `startAgent(agentId)`, followed by `waitUntilRunning(agentId)`. Do not use `actual_state` as the API-readiness signal.
 
@@ -124,7 +126,7 @@ Do not expand the product scope or change an approved Persona, safety boundary, 
 Handle UI only after the Agent and all five skills pass:
 
 - If I have not selected a stack, recommend ZooWork App Kit first.
-- Pin the page to the saved `ZOOWORK_AGENT_ID` and set `AGENT_PICKER=off`.
+- Pin the page to the automatically saved Agent ID and set `AGENT_PICKER=off`. Do not ask me to copy or enter the ID.
 - Keep the API key server-side only.
 - Support multi-turn conversations, streaming replies, refresh recovery, user isolation, usage limits, rate limiting, and abuse prevention.
 - Treat user photos as temporary private inputs and delete them after processing. Saving or sharing requires separate explicit consent.

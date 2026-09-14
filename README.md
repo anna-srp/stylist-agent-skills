@@ -6,8 +6,8 @@ A portable skill pack distilled from the core product capabilities of [Stylist A
 
 1. Clone this repository and open it in Codex or Claude Code.
 2. Copy the complete contents of [PROMPT.md](PROMPT.md) into a new conversation.
-3. Follow the instructions to sign in to ZooWork, create an API key under `Settings → API Keys`, and save it yourself in a local `.env` file. Never paste the key into the chat.
-4. Let the coding agent complete design approval, Agent creation, skill upload and attachment, Runtime startup, and real trigger tests.
+3. Follow the instructions to sign in to ZooWork, create an API key under `Settings → API Keys`, and save it yourself in a local `.env` file. The API key is the only value you enter manually; never paste it into the chat.
+4. Let the coding agent create the Agent, automatically save its returned `agent_id`, upload and attach the skills, start the Runtime, and run real trigger tests.
 5. After the core capabilities pass, decide whether to use ZooWork App Kit or connect your own UI.
 
 ## Included skills
@@ -55,7 +55,8 @@ Then load `zoowork-managed-agents` before working with ZooWork. Do not guess SDK
 ## Important boundaries
 
 - Keep `ZOOWORK_API_KEY` only in a server-side environment variable or an ignored local `.env` file. It must never enter a prompt, log, frontend bundle, or Git history.
-- Create the Agent once. Reuse the saved `agent_id` for later conversations instead of creating an Agent for each message.
+- Users enter only `ZOOWORK_API_KEY`. They must never be asked to find, copy, or manually configure an Agent ID.
+- Create the Agent once, automatically persist the returned `agent_id` in ignored server-side configuration, and reuse it for later conversations instead of creating an Agent for each message.
 - Product prices, inventory, images, and purchase links must come from current search results. Never invent them.
 - AI try-on is a visual preview, not a guarantee of size, fit, fabric behavior, or exact product fidelity.
 - Outfit feedback evaluates clothing and styling only. It must not judge a person's body, face, age, skin tone, gender expression, or attractiveness.
