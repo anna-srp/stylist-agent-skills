@@ -4,7 +4,7 @@ Copy everything below this line into a new conversation.
 
 ---
 
-Build a bilingual AI fashion stylist on ZooWork in the current project. Reproduce the core capabilities of Stylist AI Insider, not its visual design.
+Build an English-language AI fashion stylist for the United States market on ZooWork in the current project. Reproduce the core capabilities of Stylist AI Insider, not its visual design.
 
 The required default outcome is:
 
@@ -21,12 +21,15 @@ Do not turn this task into a documentation or QA project. Do not create an accep
 Default product definition:
 
 - Agent name: Stylist
-- Markets: China and the United States
-- User language: follow the user's Chinese or English
+- Market: United States only
+- Currency: USD only
+- User language: English only
 - Core entry points: find a product, build a complete look, AI virtual try-on, and outfit scoring
 - Personalization: use a progressive style profile, but never block first use on registration, a quiz, a selfie, or a complete profile
 - UI preference: do not copy the existing demo's visual design; offer ZooWork App Kit or a custom UI only after the Runtime Agent is ready
 - My additional requirements: none; requirements I add after this prompt take precedence
+
+Treat English and the United States market as fixed product scope, not onboarding questions. Do not ask the user to choose a language, country, market, or currency. Keep all user-facing Agent and UI copy in English. Search only United States inventory and use USD prices, United States retailers, and United States sizing, shipping, availability, and returns context. If a user requests shopping in another market, explain briefly that this Agent currently supports the United States only and offer to find a United States-market equivalent.
 
 Treat these files as the source of truth for product behavior:
 
@@ -119,6 +122,8 @@ For this task, “published to ZooWork Runtime” means the persistent Agent exi
 
 Run one representative test for each of the four user-facing skills, plus one style-profile precedence check. Confirm that the expected skill actually triggers; a successful upload alone is insufficient.
 
+Run all smoke tests in English and keep shopping cases within the United States market with USD budgets and United States retailer links.
+
 Keep this phase bounded:
 
 - make at most one corrective retry for a failed skill trigger or implementation defect;
@@ -156,6 +161,7 @@ If I ask for a UI:
 - treat user photos as temporary private inputs and require explicit consent before saving or sharing them;
 - add authentication, user isolation, usage limits, rate limiting, and abuse controls in proportion to the intended audience;
 - let the layout, brand, colors, and components be freely customized instead of copying the demo.
+- keep every user-facing label, message, error, and empty state in English and keep all shopping behavior fixed to the United States market.
 
 Preview and verify the UI locally. Before making a website public or changing production access, ask for my explicit approval. After approval, deploy it and return the actual URL rather than a report file.
 

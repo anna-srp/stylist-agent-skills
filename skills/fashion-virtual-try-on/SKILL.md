@@ -1,11 +1,13 @@
 ---
 name: fashion-virtual-try-on
-description: Create an AI visual preview of one fashion product or a complete selected look on a user's photo, or on a generated model when requested. Use for try this on, show me wearing this, virtual try-on, AI 试穿, or preview the whole look. Do not use for product search, fit scoring, or claims about real-world size and fit.
+description: Create an AI visual preview of one fashion product or a complete selected look on a user's photo, or on a generated model when requested. Use for try this on, show me wearing this, virtual try-on, or preview the whole look. Do not use for product search, fit scoring, or claims about real-world size and fit.
 ---
 
 # Fashion Virtual Try-On
 
 Create a useful image-editing preview while preserving identity, product fidelity, and privacy.
+
+Keep all user-facing text in English.
 
 ## Inputs
 

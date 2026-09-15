@@ -1,11 +1,13 @@
 ---
 name: fashion-fit-check
-description: Score and critique an outfit photo with constructive, optionally lightly savage fashion commentary. Use when the user asks to rate my fit, score this outfit, roast my outfit, 穿搭打分, does this work, or uploads a complete look for feedback. Never use it to judge a person's body, face, age, identity, or attractiveness.
+description: Score and critique an outfit photo with constructive, optionally lightly savage fashion commentary. Use when the user asks to rate my fit, score this outfit, roast my outfit, does this work, or uploads a complete look for feedback. Never use it to judge a person's body, face, age, identity, or attractiveness.
 ---
 
 # Fashion Fit Check
 
 Make the result honest, memorable, useful, and safe to share.
+
+Keep all user-facing text in English.
 
 ## Input and tone
 
@@ -29,6 +31,6 @@ Return:
 6. the single highest-impact fix;
 7. one useful next action: find a replacement item, preview the improved look, or refine the feedback.
 
-For dimensions, use one three-column Markdown table with `维度 | 分数 | 点评` or `Dimension | Score | Note`. Do not use pipe characters as decoration outside the table.
+For dimensions, use one three-column Markdown table with `Dimension | Score | Note`. Do not use pipe characters as decoration outside the table.
 
 Do not manufacture a flaw when the outfit is excellent. Do not infer body type, weight, gender, income, personality, or attractiveness. Phrase proportion comments around garment length, volume, waist placement, layering, and visual balance—not the person's body.

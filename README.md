@@ -1,6 +1,6 @@
 # Stylist Agent Skills
 
-A portable skill pack distilled from the core product capabilities of [Stylist AI Insider](https://stylist-ai-insider.vercel.app/). It does not reproduce the site's visual design. Instead, it provides the capability layer that Codex, Claude Code, or another coding agent can use to rebuild the product, customize it, and connect it to any UI.
+A portable, English-language skill pack distilled from the core product capabilities of [Stylist AI Insider](https://stylist-ai-insider.vercel.app/) for the United States market. It does not reproduce the site's visual design. Instead, it provides the capability layer that Codex, Claude Code, or another coding agent can use to rebuild the product, customize it, and connect it to any UI.
 
 ## Quick start
 
@@ -12,7 +12,7 @@ A portable skill pack distilled from the core product capabilities of [Stylist A
 
 ## Expected outcome
 
-The default deliverable is a persistent Stylist Agent running on ZooWork Runtime with all five skills attached. The setup assistant should report the Agent ID, skill status, smoke-test result, and any external limitation directly in the conversation. It should not create an acceptance-report Markdown file unless you explicitly ask for one.
+The default deliverable is a persistent English-language Stylist Agent for the United States market running on ZooWork Runtime with all five skills attached. The setup assistant should report the Agent ID, skill status, smoke-test result, and any external limitation directly in the conversation. It should not create an acceptance-report Markdown file unless you explicitly ask for one.
 
 ZooWork Runtime hosts the Agent and its skills; it does not automatically create a public website. If you want an end-user interface, the assistant will offer to build one after the Runtime Agent is ready. A public UI is deployed only after you review and approve it.
 
@@ -20,11 +20,11 @@ ZooWork Runtime hosts the Agent and its skills; it does not automatically create
 
 | User intent | Runtime skill | Purpose |
 |---|---|---|
-| Find, compare, or buy one product | `fashion-product-search` | Returns currently purchasable products with verifiable prices and links in the selected market |
-| Build a complete look for an occasion or around an anchor item | `fashion-outfit-builder` | Assembles a complete, single-market, budget-compliant shoppable look |
+| Find, compare, or buy one product | `fashion-product-search` | Returns currently purchasable United States products with verifiable USD prices and direct links |
+| Build a complete look for an occasion or around an anchor item | `fashion-outfit-builder` | Assembles a complete, budget-compliant shoppable look from United States retailers |
 | Preview one product or a complete look on a person | `fashion-virtual-try-on` | Creates an AI try-on preview from a person image and product references |
 | Score or lightly roast an outfit | `fashion-fit-check` | Critiques only clothing and styling, then recommends the highest-impact improvement |
-| Remember market, sizing, budget, and taste | `fashion-style-profile` | Adds progressive personalization without making registration or a quiz a prerequisite |
+| Remember sizing, budget, and taste | `fashion-style-profile` | Adds progressive personalization without making registration or a quiz a prerequisite |
 
 The four user-facing skills are equal entry points. `fashion-style-profile` is a supporting capability. Share pages, landing pages, frontend frameworks, and deployment configuration are deliberately outside this repository's core scope.
 
@@ -63,6 +63,8 @@ Then load `zoowork-managed-agents` before working with ZooWork. Do not guess SDK
 - Keep `ZOOWORK_API_KEY` only in a server-side environment variable or an ignored local `.env` file. It must never enter a prompt, log, frontend bundle, or Git history.
 - Users enter only `ZOOWORK_API_KEY`. They must never be asked to find, copy, or manually configure an Agent ID.
 - Create the Agent once, automatically persist the returned `agent_id` in ignored server-side configuration, and reuse it for later conversations instead of creating an Agent for each message.
+- All user-facing conversation and UI copy must be in English.
+- Shopping is limited to the United States market. Use USD prices, United States retailers, and United States sizing, availability, shipping, and returns context. Do not ask the user to choose a market or silently substitute products from another market.
 - Product prices, inventory, images, and purchase links must come from current search results. Never invent them.
 - AI try-on is a visual preview, not a guarantee of size, fit, fabric behavior, or exact product fidelity.
 - Outfit feedback evaluates clothing and styling only. It must not judge a person's body, face, age, skin tone, gender expression, or attractiveness.

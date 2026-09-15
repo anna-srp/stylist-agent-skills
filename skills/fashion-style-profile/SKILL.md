@@ -1,11 +1,13 @@
 ---
 name: fashion-style-profile
-description: Progressively remember, load, update, export, or delete a user's fashion preferences such as language, China or United States market, sizes, budget, favorite styles, and exclusions. Use in the background when stable preferences are provided or when the user asks to manage a style profile. Never require profile completion before another fashion skill can run.
+description: Progressively remember, load, update, export, or delete a United States shopper's fashion preferences such as sizes, USD budget, favorite styles, and exclusions. Use in the background when stable preferences are provided or when the user asks to manage a style profile. Never require profile completion before another fashion skill can run.
 ---
 
 # Fashion Style Profile
 
 Remember only information that improves future fashion results.
+
+Keep all user-facing text in English. English, the United States market, and USD are fixed product settings rather than profile preferences.
 
 ## Principles
 
@@ -21,10 +23,9 @@ Remember only information that improves future fashion results.
 
 Store only fields that have values:
 
-- preferred language and `CN` or `US` market;
-- city when the user wants weather-aware styling;
-- clothing and shoe sizes, preserving the market-specific sizing system;
-- budget ranges and currency;
+- United States city when the user wants weather-aware styling;
+- clothing and shoe sizes in the United States sizing system;
+- budget ranges in USD;
 - preferred and avoided colors, brands, silhouettes, materials, and occasions;
 - fit or proportion preferences stated by the user;
 - feedback-tone preference;
