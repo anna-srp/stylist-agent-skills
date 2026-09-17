@@ -39,4 +39,6 @@ Use the product's authenticated per-user store when available. Isolate records b
 
 When durable storage is unavailable, keep preferences only in the current session and say so if the user asks whether they were saved. Do not pretend persistence succeeded.
 
+For an explicit deployment verification that asks only for a profile summary, identify the stable preferences, state that they remain session-only, and stop. Do not search retailers, build an outfit, inspect an image, generate a try-on, or create persistent profile data.
+
 Load relevant preferences before `fashion-product-search` and `fashion-outfit-builder`. For `fashion-virtual-try-on`, use style preferences to choose between products only; never redesign an exact reference garment from the profile.

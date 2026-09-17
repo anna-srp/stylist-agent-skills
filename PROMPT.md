@@ -1,170 +1,87 @@
-# Complete Prompt for Codex / Claude Code
+# Fast Setup Prompt for Codex / Claude Code
 
 Copy everything below this line into a new conversation.
 
 ---
 
-Build an English-language AI fashion stylist for the United States market on ZooWork in the current project. Reproduce the core capabilities of Stylist AI Insider, not its visual design.
+Build and deploy Stylist, an English-language fashion Agent for the United States market, on ZooWork Runtime using this repository:
 
-The required default outcome is:
+<https://github.com/anna-srp/stylist-agent-skills>
 
-1. install and read the official ZooWork development skill;
-2. ask me to configure only my ZooWork API key;
-3. create or reuse one ZooWork Agent;
-4. upload and attach the five fashion skills in this repository;
-5. start the Agent and confirm that it is running on ZooWork Runtime;
-6. run a small bounded smoke test;
-7. report the usable Agent directly in the chat and ask whether I want a UI.
+The default mode is **fast setup**, not full shopping or image acceptance testing. The required outcome is one persistent ZooWork Agent with all five repository Skills attached, running, and verified by one lightweight text-only Runtime turn. Do not search retailers, inspect personal photos, or generate a try-on during setup. Do not build a UI unless I ask after the Runtime Agent is ready.
 
-Do not turn this task into a documentation or QA project. Do not create an acceptance report, retry assessment, evidence bundle, Markdown deliverable, or other report file unless I explicitly request one. The Agent running successfully on ZooWork Runtime is the primary deliverable. A UI is an optional next step.
-
-Default product definition:
+## Fixed product scope
 
 - Agent name: Stylist
+- Language: English only
 - Market: United States only
 - Currency: USD only
-- User language: English only
-- Core entry points: find a product, build a complete look, AI virtual try-on, and outfit scoring
-- Personalization: use a progressive style profile, but never block first use on registration, a quiz, a selfie, or a complete profile
-- UI preference: do not copy the existing demo's visual design; offer ZooWork App Kit or a custom UI only after the Runtime Agent is ready
-- My additional requirements: none; requirements I add after this prompt take precedence
+- Entry points: product search, complete looks, virtual try-on, outfit feedback, and progressive style preferences
+- Personalization: never block first use on registration, a quiz, a selfie, or a complete profile
+- Privacy: user photos are private current-task inputs by default
+- UI: optional and separate from Runtime deployment; never copy the reference site's protected visual design
+- Additional requirements I give after this prompt take precedence
 
-Treat English and the United States market as fixed product scope, not onboarding questions. Do not ask the user to choose a language, country, market, or currency. Keep all user-facing Agent and UI copy in English. Search only United States inventory and use USD prices, United States retailers, and United States sizing, shipping, availability, and returns context. If a user requests shopping in another market, explain briefly that this Agent currently supports the United States only and offer to find a United States-market equivalent.
+## 1. Open the repository
 
-Treat these files as the source of truth for product behavior:
+Use the existing local repository when present. Otherwise clone it once and work from its root. Read `README.md`, `agent/AGENTS.md`, and every `skills/*/SKILL.md` entrypoint. Read a referenced file only when the selected Skill requires it.
 
-- `agent/AGENTS.md`
-- `skills/fashion-product-search/SKILL.md`
-- `skills/fashion-outfit-builder/SKILL.md`
-- `skills/fashion-virtual-try-on/SKILL.md` and its references
-- `skills/fashion-fit-check/SKILL.md` and its references
-- `skills/fashion-style-profile/SKILL.md`
+## 2. Load the official ZooWork development Skill
 
-Follow this workflow in order.
+Before making ZooWork calls, use the official `zoowork-managed-agents` development Skill from <https://github.com/SerendipityOneInc/zoowork-sdk-skills>. If it is already installed, read and use that copy. Do not clone or reinstall it merely to check for updates. If it is missing, install it once and follow its required deployment guidance.
 
-## 0. Install and read the official ZooWork development skill
+The official development Skill teaches Codex or Claude how to deploy. The five fashion Skills in this repository are what run on the ZooWork Agent.
 
-Before writing any ZooWork SDK call, run:
+## 3. Ask me for only the ZooWork API key
+
+Check whether `ZOOWORK_API_KEY` is available in the process environment or this repository's local `.env` file. Never print its value.
+
+If it is missing, ask me to sign in at <https://zoowork.ai/claw-settings?tab=account-api-keys>, create and copy the one-time `zct_...` secret, save it myself as `ZOOWORK_API_KEY` in the ignored `.env` file, and tell you when it is ready without pasting it into chat.
+
+The API key is the only value I enter manually. Never ask me for an Agent ID. The setup stores the generated ID in ignored `.zoowork/` state. Keep the key out of prompts, source files, logs, artifacts, frontend bundles, and Git history.
+
+## 4. Run the checked-in fast setup
+
+After the key is available, run:
 
 ```bash
-npx skills add SerendipityOneInc/zoowork-sdk-skills
+npm ci
+npm run setup
 ```
 
-Then read the complete `SKILL.md` for `zoowork-managed-agents`. Read its `deploy-your-agent` reference and any SDK or event-streaming reference needed for the implementation. If the official repository is already available locally, read it instead of installing it again.
+Use this checked-in automation instead of writing a new deployment harness. Do not run `npm view`, browse package registries, inspect the entire SDK declaration file, or create replacement setup scripts unless the command fails with a concrete compatibility error.
 
-The official skill is for the development assistant. The five fashion skills in this repository are uploaded and attached to the Agent running in ZooWork Runtime. Do not confuse these two layers.
+`npm run setup` must:
 
-## 1. Ask for only the ZooWork API key
+1. validate the key with the read-only model catalog;
+2. create or reuse one persistent Agent using saved state, stable labels, and an idempotency key;
+3. package all five Skills correctly and upload only new or changed versions;
+4. attach only missing Skills and verify that all five are enabled and eligible;
+5. start the Agent only when needed and use the documented helper to wait for `desired_state === 'running'`;
+6. run one English, United States, text-only style-profile turn that confirms `fashion-style-profile` triggers;
+7. keep that verification session-only and stop without shopping, weather lookup, outfit building, photo scoring, or image generation.
 
-Check only whether `ZOOWORK_API_KEY` is configured. Do not print its value.
+The quick Runtime verification has a two-minute budget. If it fails, diagnose that failure only. Do not silently escalate into retailer searches, additional sessions, or try-on generation.
 
-The API key is the only value I enter manually. Never ask me to find, copy, paste, or configure an Agent ID. ZooWork returns the Agent ID after creation; save and reuse it automatically.
+## 5. Finish directly in chat
 
-If the API key is missing, pause the setup and ask me to:
+When setup succeeds, report:
 
-1. sign in at <https://zoowork.ai/claw-settings?tab=account-api-keys>;
-2. open `Settings → API Keys → Create API Key`;
-3. create and immediately copy the one-time `zct_...` secret;
-4. save it myself as `ZOOWORK_API_KEY` in a local `.env` file;
-5. tell you when it is saved without pasting the key into the chat.
+- that Stylist is running on ZooWork Runtime;
+- the automatically generated Agent ID;
+- all five attached Skill names and enabled/eligible status;
+- the quick verification result and elapsed time;
+- that no retailer search, personal-photo processing, or image generation occurred during setup;
+- this exact question: “Would you like to try a real fashion request now, customize the workflow, or build a UI for this Agent?”
 
-Ensure `.env` is ignored by Git. The API key must never enter a prompt, source file, frontend bundle, log, artifact, or Git history. Do not create, rotate, or delete the key on my behalf.
+Do not create an acceptance report, retry assessment, evidence bundle, or Markdown deliverable. The running Agent is the deliverable.
 
-After I confirm it is saved, call `listModels()` as the smallest read-only validation. Report only whether validation succeeded and how many models are available.
+## 6. Full capability testing is opt-in
 
-## 2. Read the product definition and proceed
+Do not test every fashion Skill during installation. Run product searches, outfit assembly, photo scoring, or virtual try-on only when I explicitly request a full acceptance test or make a real fashion request. Use current United States inventory, USD prices, exact retailer links, private user-photo handling, and at most one bounded image correction. Explain before a full test that retailer verification and image generation can add several minutes and may spend image credits.
 
-Read `agent/AGENTS.md` and all five skill entrypoints. Read a skill's references when that skill requires them.
+## 7. UI is opt-in
 
-Do not require a separate design-approval round when the repository already answers the implementation questions. Briefly state what you are about to provision, then proceed. Ask me only when a genuinely missing choice would materially change the Agent; do not ask ceremonial questions and do not create a design document.
+If I ask for a UI, recommend ZooWork App Kit when I have no frontend preference; otherwise adapt my frontend. Keep the API key server-side, pin the saved Agent ID automatically, set `AGENT_PICKER=off`, and keep all copy in English with United States shopping behavior. Support private uploads, multi-turn sessions, refresh recovery, authentication, user isolation, rate limits, usage limits, and explicit consent before saving or sharing photos. Preview locally and ask for approval before public deployment.
 
-## 3. Create or reuse one Agent
-
-Follow `zoowork-managed-agents` exactly:
-
-- Use `@zoowork-ai/sdk`; do not guess package names or API shapes.
-- Select a model from the actual `listModels()` response.
-- Use `agent/AGENTS.md` as a Persona document.
-- Check ignored local state for a previously generated `agent_id` and try to resolve the same Agent through stable labels. Do not ask me for the ID.
-- Call `createAgent()` only if the Agent genuinely does not exist, using a stable idempotency key.
-- Automatically save the returned `agent_id` in ignored server-side state, such as `.zoowork/stylist-agent.json`.
-- If a backend or App Kit later expects `ZOOWORK_AGENT_ID`, populate it automatically from the saved state rather than asking me to enter it.
-- Never create an Agent inside the per-message request path.
-
-## 4. Package, upload, and attach the five skills
-
-Process:
-
-- `fashion-product-search`
-- `fashion-outfit-builder`
-- `fashion-virtual-try-on`
-- `fashion-fit-check`
-- `fashion-style-profile`
-
-For each skill:
-
-1. verify that the directory name matches the `name` in `SKILL.md` frontmatter;
-2. preserve that directory as the zip's top-level directory;
-3. use `uploadSkill(..., { scope: 'org' | 'personal' })` for a new owned skill, or add a version when the same owned skill already exists and changed;
-4. attach it with `putAgentSkill(agentId, skillId)`;
-5. verify with `listAgentSkills(agentId, { verbose: true })` that it is attached, enabled, and `eligible !== false`;
-6. persist the skill IDs and versions without storing secrets.
-
-Do not re-upload or attempt to attach global ZooWork catalog skills that a new Agent already receives automatically.
-
-## 5. Publish the Agent to ZooWork Runtime
-
-After the Persona and skills are attached, call `startAgent(agentId)` and then `waitUntilRunning(agentId)`. Do not use `actual_state` as the API-readiness signal.
-
-For this task, “published to ZooWork Runtime” means the persistent Agent exists, all five skills are attached, and `waitUntilRunning()` confirms `desired_state === 'running'`. This does not automatically create a public website, and the absence of a UI is not a Runtime failure.
-
-## 6. Run a bounded smoke test
-
-Run one representative test for each of the four user-facing skills, plus one style-profile precedence check. Confirm that the expected skill actually triggers; a successful upload alone is insufficient.
-
-Run all smoke tests in English and keep shopping cases within the United States market with USD budgets and United States retailer links.
-
-Keep this phase bounded:
-
-- make at most one corrective retry for a failed skill trigger or implementation defect;
-- do not repeatedly spend image-generation credits to chase a perfect score;
-- treat `insufficient_credits`, retailer anti-bot responses, temporary product-page failures, and other third-party availability issues as clearly labeled external limitations rather than reasons to undo a healthy Runtime deployment;
-- do not require production UI concerns such as user authentication, rate limits, or abuse controls before declaring the Runtime Agent ready when no UI was requested;
-- do not generate report or evidence files; keep the concise results in the final chat response.
-
-A fatal Runtime blocker is an invalid key, an Agent that cannot reach `running`, a skill that cannot be attached or is ineligible, or a broken session/event path that prevents any conversation. A single blocked retailer, an exhausted image quota, or an optional production-hardening item is not the same as a failed Agent deployment.
-
-## 7. Finish with the Agent, not a Markdown file
-
-When the Agent is running, respond directly in the conversation with:
-
-- a clear statement that Stylist is running on ZooWork Runtime;
-- the automatically generated `agent_id`;
-- the five attached skill names and their status;
-- a short smoke-test summary;
-- any external limitation that remains, without presenting it as the main deliverable;
-- the exact next-step question: “Would you like me to build a UI for this Agent now? I can use ZooWork App Kit or adapt your existing frontend.”
-
-Do not create or return `acceptance-summary.md`, `retry-assessment.md`, or a similar document unless I explicitly ask for a written test report.
-
-If I do not want a UI, stop after delivering the running Agent status. Do not treat this as incomplete.
-
-## 8. Build and deploy a UI only if I want one
-
-If I ask for a UI:
-
-- recommend ZooWork App Kit when I have no existing frontend or stack preference;
-- otherwise adapt my existing frontend and keep ZooWork session and event handling on the backend;
-- pin the UI to the automatically saved Agent ID and set `AGENT_PICKER=off`;
-- keep `ZOOWORK_API_KEY` server-side only;
-- support multi-turn conversations, streaming, and refresh recovery;
-- treat user photos as temporary private inputs and require explicit consent before saving or sharing them;
-- add authentication, user isolation, usage limits, rate limiting, and abuse controls in proportion to the intended audience;
-- let the layout, brand, colors, and components be freely customized instead of copying the demo.
-- keep every user-facing label, message, error, and empty state in English and keep all shopping behavior fixed to the United States market.
-
-Preview and verify the UI locally. Before making a website public or changing production access, ask for my explicit approval. After approval, deploy it and return the actual URL rather than a report file.
-
-The final product flow is: skills attached → Agent running on ZooWork Runtime → direct usable-status response → optional UI choice → optional UI deployment.
-
----
+The intended flow is: API key → fast incremental setup → running Runtime Agent → one text-only verification → optional real fashion request, customization, or UI.

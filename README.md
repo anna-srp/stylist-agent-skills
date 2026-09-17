@@ -1,40 +1,73 @@
 # Stylist Agent Skills
 
-A portable, English-language skill pack distilled from the core product capabilities of [Stylist AI Insider](https://stylist-ai-insider.vercel.app/) for the United States market. It does not reproduce the site's visual design. Instead, it provides the capability layer that Codex, Claude Code, or another coding agent can use to rebuild the product, customize it, and connect it to any UI.
+A portable, English-language Skill pack distilled from the core capabilities of [Stylist AI Insider](https://stylist-ai-insider.vercel.app/) for the United States market. It provides the capability layer without copying the site's visual design.
 
-## Quick start
+## Fast start
 
 1. Clone this repository and open it in Codex or Claude Code.
 2. Copy the complete contents of [PROMPT.md](PROMPT.md) into a new conversation.
-3. Follow the instructions to sign in to ZooWork, create an API key under `Settings → API Keys`, and save it yourself in a local `.env` file. The API key is the only value you enter manually; never paste it into the chat.
-4. Let the coding agent create the Agent, automatically save its returned `agent_id`, upload and attach the skills, start it on ZooWork Runtime, and run a bounded smoke test.
-5. Receive the running Agent status directly in the chat. The coding agent will then ask whether you want a UI; choose ZooWork App Kit, an existing frontend, or no UI.
+3. Create a ZooWork API key, save it in a local ignored `.env` file, and tell the assistant when it is ready. Never paste it into chat.
+4. The assistant runs the checked-in setup and reports the running Agent directly in chat.
+5. Choose whether to try a real fashion request, customize the workflow, or build a UI.
 
-## Expected outcome
+The API key is the only value entered manually. The Agent ID is created, stored, and reused automatically.
 
-The default deliverable is a persistent English-language Stylist Agent for the United States market running on ZooWork Runtime with all five skills attached. The setup assistant should report the Agent ID, skill status, smoke-test result, and any external limitation directly in the conversation. It should not create an acceptance-report Markdown file unless you explicitly ask for one.
+## Fast setup versus real use
 
-ZooWork Runtime hosts the Agent and its skills; it does not automatically create a public website. If you want an end-user interface, the assistant will offer to build one after the Runtime Agent is ready. A public UI is deployed only after you review and approve it.
-
-## Included skills
-
-| User intent | Runtime skill | Purpose |
+| Mode | What it does | When to use it |
 |---|---|---|
-| Find, compare, or buy one product | `fashion-product-search` | Returns currently purchasable United States products with verifiable USD prices and direct links |
-| Build a complete look for an occasion or around an anchor item | `fashion-outfit-builder` | Assembles a complete, budget-compliant shoppable look from United States retailers |
-| Preview one product or a complete look on a person | `fashion-virtual-try-on` | Creates an AI try-on preview from a person image and product references |
-| Score or lightly roast an outfit | `fashion-fit-check` | Critiques only clothing and styling, then recommends the highest-impact improvement |
-| Remember sizing, budget, and taste | `fashion-style-profile` | Adds progressive personalization without making registration or a quiz a prerequisite |
+| Fast setup | Incremental deployment plus one text-only style-profile verification | Default installation |
+| Real request | Shopping, outfit building, fit feedback, or virtual try-on | First actual use |
+| Full acceptance test | Exercises multiple retailer and image paths | Only when explicitly requested |
 
-The four user-facing skills are equal entry points. `fashion-style-profile` is a supporting capability. Share pages, landing pages, frontend frameworks, and deployment configuration are deliberately outside this repository's core scope.
+Fast setup intentionally avoids retailer search, weather lookup, personal-photo processing, and image generation. The quick Runtime turn has a two-minute hard budget. Expensive or failure-prone third-party work is deferred until it produces something the user actually wants.
+
+## Included automation
+
+```bash
+npm ci
+npm run setup
+```
+
+The commands are also available separately:
+
+```bash
+npm run deploy  # create/reuse the Agent and reconcile only changed Skills
+npm run verify  # one text-only style-profile turn
+```
+
+Ignored `.zoowork/` state stores Agent and Skill IDs, content hashes, versions, and the last verification result. It stores no API key. Repeated deployment skips unchanged Skill uploads.
+
+## Included Skills
+
+| User intent | Runtime Skill | Purpose |
+|---|---|---|
+| Find or compare one product | `fashion-product-search` | Verifies current United States products, USD prices, and direct links |
+| Build a complete look | `fashion-outfit-builder` | Creates a coherent, budget-compliant shoppable outfit |
+| Preview an item or look | `fashion-virtual-try-on` | Produces a private AI preview from person and product references |
+| Score or lightly roast an outfit | `fashion-fit-check` | Critiques clothing and styling, never the person |
+| Manage stable preferences | `fashion-style-profile` | Adds progressive personalization without an onboarding gate |
+
+## Boundaries
+
+- All user-facing conversation and UI copy are English only.
+- Shopping is limited to the United States market and USD.
+- Products, prices, inventory, images, and links must come from current sources; never invent them.
+- Virtual try-on is an AI preview, not a fit or sizing guarantee.
+- User photos are private current-task inputs unless the user explicitly consents to persistence or sharing.
+- `zoowork-managed-agents` belongs in the development assistant; the five repository Skills belong on the Runtime Agent.
+- ZooWork Runtime does not automatically create a public website. A UI is optional.
 
 ## Repository structure
 
 ```text
 .
 ├── PROMPT.md
-├── agent/
-│   └── AGENTS.md
+├── package.json
+├── scripts/
+│   ├── provision.mjs
+│   └── verify.mjs
+├── agent/AGENTS.md
 └── skills/
     ├── fashion-product-search/
     ├── fashion-outfit-builder/
@@ -43,35 +76,8 @@ The four user-facing skills are equal entry points. `fashion-style-profile` is a
     └── fashion-style-profile/
 ```
 
-Every skill directory name exactly matches the `name` in its `SKILL.md` frontmatter, so it can be packaged, uploaded, and attached using ZooWork's skill zip rules.
-
-## Two different kinds of skill
-
-- `zoowork-managed-agents` is installed into a development assistant such as Codex or Claude. It teaches the assistant how to use the ZooWork SDK correctly.
-- The fashion skills under this repository's `skills/` directory are uploaded and attached to a ZooWork Agent. They teach the running Stylist Agent how to complete fashion tasks.
-
-Install the official development skill first:
-
-```bash
-npx skills add SerendipityOneInc/zoowork-sdk-skills
-```
-
-Then load `zoowork-managed-agents` before working with ZooWork. Do not guess SDK calls from experience with another Agent platform.
-
-## Important boundaries
-
-- Keep `ZOOWORK_API_KEY` only in a server-side environment variable or an ignored local `.env` file. It must never enter a prompt, log, frontend bundle, or Git history.
-- Users enter only `ZOOWORK_API_KEY`. They must never be asked to find, copy, or manually configure an Agent ID.
-- Create the Agent once, automatically persist the returned `agent_id` in ignored server-side configuration, and reuse it for later conversations instead of creating an Agent for each message.
-- All user-facing conversation and UI copy must be in English.
-- Shopping is limited to the United States market. Use USD prices, United States retailers, and United States sizing, availability, shipping, and returns context. Do not ask the user to choose a market or silently substitute products from another market.
-- Product prices, inventory, images, and purchase links must come from current search results. Never invent them.
-- AI try-on is a visual preview, not a guarantee of size, fit, fabric behavior, or exact product fidelity.
-- Outfit feedback evaluates clothing and styling only. It must not judge a person's body, face, age, skin tone, gender expression, or attractiveness.
-- User photos are current-task inputs by default. Saving or publicly sharing them requires explicit consent.
-
 ## References
 
 - [ZooWork Agent creation and public-release guide](https://starquest.feishu.cn/docx/AxJAd0dPDoWYIVxWQ9Xc2AjFndh)
-- [ZooWork SDK skills](https://github.com/SerendipityOneInc/zoowork-sdk-skills)
+- [ZooWork SDK Skills](https://github.com/SerendipityOneInc/zoowork-sdk-skills)
 - [Live demo](https://stylist-ai-insider.vercel.app/)
