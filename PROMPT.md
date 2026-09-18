@@ -28,7 +28,7 @@ Use the existing local repository when present. Otherwise clone it once and work
 
 ## 2. Load official ZooWork guidance
 
-Before making ZooWork calls, use the installed `zoowork-managed-agents` Skill or install it once from <https://github.com/SerendipityOneInc/zoowork-sdk-skills> if missing. Do not reinstall it only to check for updates. Read the current `app-kit/README.md` in <https://github.com/SerendipityOneInc/zoowork-quickstarts> before adapting the UI foundation.
+Before making ZooWork calls, use the installed `zoowork-managed-agents` Skill or install it once from <https://github.com/SerendipityOneInc/zoowork-sdk-skills> if missing. Do not reinstall it only to check for updates.
 
 The official development Skill teaches the coding assistant how to deploy. The five fashion Skills in this repository run on the ZooWork Agent.
 
@@ -53,30 +53,29 @@ The quick verification has a two-minute budget and must remain session-only. Do 
 
 ## 5. Build the public UI immediately
 
-Continue automatically after verification. Use ZooWork App Kit as the backend and streaming foundation unless a stronger compatible frontend already exists. Preserve its authentication, D1 ownership records, Durable Object execution, refresh-safe streaming, and server-only credential boundary. Build an original product experience with:
+Continue automatically after verification. Build the smallest useful full-stack web experience for this Agent. Reuse the setup Agent ID; do not provision another Agent for the UI. Prefer a simple Vercel-compatible framework and deploy to Vercel when the account is already authenticated. Build an original product experience with:
 
 - fast text entry without a mandatory onboarding gate;
 - clear product search, complete-look, try-on, outfit-feedback, and preference entry points;
 - product cards with source, USD price, retailer, and direct purchase link fields;
-- a multi-turn conversation and result history that survives refresh;
-- progressive, editable style preferences stored in the application database rather than assumed platform memory;
+- a streaming multi-turn conversation that survives refresh;
+- progressive, editable style preferences kept within that visitor's conversation;
 - explicit consent and deletion controls for any verified photo workflow; and
 - loading, reconnect, empty, unavailable-inventory, quota, and generation-progress states.
 
-For public deployment:
+For the lightweight public MVP:
 
-- set `AGENT_PICKER=off`;
-- keep `ZOOWORK_API_KEY` only in a server-side secret store;
-- keep Agent and Skill IDs out of browser code and never ask the user to enter them;
-- use App Kit's per-user Agent mode, store user-to-Agent and user-to-session ownership in D1, and attach all five org Skills from generated server-side deployment state;
-- never share an agent-scope `/workspace` across unrelated users;
-- use Cloudflare Access or equivalent real authentication and never use `DEV_EMAIL` in production;
-- enforce rate limits, usage limits, bounded retries, and per-user authorization; and
-- do not claim native ZooWork session uploads work: they are not production-wired. Ship a text-first public MVP, and enable private photo upload only after a signed, expiring object-storage bridge is end-to-end verified and temporary objects are deleted.
+- keep `ZOOWORK_API_KEY`, the Agent ID, and every ZooWork call on the server;
+- let the browser call only the app's own server routes;
+- create a separate ZooWork Session for each visitor or new conversation, keep its identifier in a signed, HTTP-only cookie or equivalent server-controlled state, and never let one visitor load another visitor's Session;
+- stream events until `run.finished`, retain the latest cursor for reconnect, and handle loading, error, timeout, and New conversation states;
+- add a basic server-side rate or usage limit so the public page cannot spend credits without bounds;
+- do not add login, an admin panel, billing, a dashboard, D1, Durable Objects, or per-user Agent provisioning unless they are genuinely required; and
+- do not enable photo uploads in this first release. Keep it text-first until a signed, expiring object-storage path is verified end to end.
 
-Preview locally and run a text-only UI smoke test, then deploy to an already authenticated provider or use App Kit's Cloudflare Workers path. This prompt already authorizes deployment; do not ask whether to publish. If interactive hosting login is required, ask me only to complete that authorization and continue.
+Preview locally and run one text-only UI smoke test, then deploy to Vercel. This prompt already authorizes deployment; do not ask whether to publish. If Vercel requires interactive login, ask me only to complete that authorization and continue.
 
-Verify that the public URL loads, authentication is active, a new conversation streams correctly, refresh restores it, session ownership is enforced, and no ZooWork secret appears in client assets or browser network responses.
+Verify that the public URL loads, a new conversation streams correctly, refresh restores it, visitors are isolated, rate limiting works, and no ZooWork secret or Agent ID appears in client assets or browser network responses.
 
 ## 6. Keep expensive capability tests opt-in
 
@@ -84,8 +83,8 @@ Do not exercise retailer search, outfit assembly, photo scoring, or virtual try-
 
 ## 7. Finish directly in chat
 
-Return the running setup Agent ID; all five attached Skill names and enabled/eligible status; quick-verification result and elapsed time; confirmation that setup performed no shopping, personal-photo processing, or image generation; the public URL and authentication mode; the UI smoke-test result; and any verified first-release limitation, especially private photo upload status.
+Return the running setup Agent ID; all five attached Skill names and enabled/eligible status; quick-verification result and elapsed time; confirmation that setup performed no shopping, personal-photo processing, or image generation; the public Vercel URL; the UI smoke-test result; and any verified first-release limitation, especially private photo upload status.
 
 Do not create an acceptance report, retry assessment, evidence bundle, or Markdown deliverable instead of the product. The running Agent and public URL are the deliverables.
 
-The intended flow is: API key → fast incremental setup → one text-only verification → secure fashion UI → public URL.
+The intended flow is: API key → fast incremental setup → one text-only verification → lightweight fashion UI → public Vercel URL.

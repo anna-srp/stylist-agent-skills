@@ -22,7 +22,7 @@ The API key is the only value entered manually. The Agent ID is created, stored,
 
 Fast setup intentionally avoids retailer search, weather lookup, personal-photo processing, and image generation. The quick Runtime turn has a two-minute hard budget. Expensive or failure-prone third-party work is deferred until it produces something the user actually wants.
 
-After that verification, the default prompt continues into a secure public UI built on the ZooWork App Kit foundation. The API key remains server-side, the Agent picker is disabled, per-user Agents receive all five org Skills automatically, and real authentication and session ownership are required. The first public build is text-first; private photo upload is enabled only after a signed temporary-media bridge is verified end to end.
+After that verification, the default prompt continues into a lightweight public UI deployed on Vercel. It reuses the same Agent, keeps the API key and Agent ID server-side, creates a separate Session per visitor or conversation, and includes a basic usage limit. The first public build is text-first and intentionally skips login, billing, dashboards, and private photo upload.
 
 ## Included automation
 
