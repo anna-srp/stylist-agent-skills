@@ -1,87 +1,91 @@
-# Fast Setup Prompt for Codex / Claude Code
+# Build, Verify, and Publicly Deploy Stylist
 
-Copy everything below this line into a new conversation.
+Copy everything below this line into a new Codex or Claude Code conversation.
 
 ---
 
-Build and deploy Stylist, an English-language fashion Agent for the United States market, on ZooWork Runtime using this repository:
+Build and publicly deploy Stylist, an English-language fashion Agent for the United States market, using:
 
 <https://github.com/anna-srp/stylist-agent-skills>
 
-The default mode is **fast setup**, not full shopping or image acceptance testing. The required outcome is one persistent ZooWork Agent with all five repository Skills attached, running, and verified by one lightweight text-only Runtime turn. Do not search retailers, inspect personal photos, or generate a try-on during setup. Do not build a UI unless I ask after the Runtime Agent is ready.
+The required outcome is one persistent ZooWork setup Agent with all five repository Skills attached, one lightweight text-only Runtime verification, an original fashion UI connected through a secure backend, and a working publicly accessible URL. Do not stop after Runtime setup or ask whether I want a UI. Build and deploy it immediately after verification. Do not search retailers, process personal photos, or generate a try-on during setup.
 
 ## Fixed product scope
 
-- Agent name: Stylist
+- Product: Stylist
 - Language: English only
 - Market: United States only
 - Currency: USD only
 - Entry points: product search, complete looks, virtual try-on, outfit feedback, and progressive style preferences
 - Personalization: never block first use on registration, a quiz, a selfie, or a complete profile
-- Privacy: user photos are private current-task inputs by default
-- UI: optional and separate from Runtime deployment; never copy the reference site's protected visual design
-- Additional requirements I give after this prompt take precedence
+- Privacy: photos are private current-task inputs unless the user explicitly consents otherwise
+- UI: required and original; do not copy the reference site's protected design
+- Additional requirements I provide after this prompt take precedence
 
 ## 1. Open the repository
 
-Use the existing local repository when present. Otherwise clone it once and work from its root. Read `README.md`, `agent/AGENTS.md`, and every `skills/*/SKILL.md` entrypoint. Read a referenced file only when the selected Skill requires it.
+Use the existing local repository when present. Otherwise clone it once and work from its root. Read `README.md`, `agent/AGENTS.md`, and all five `skills/*/SKILL.md` entrypoints.
 
-## 2. Load the official ZooWork development Skill
+## 2. Load official ZooWork guidance
 
-Before making ZooWork calls, use the official `zoowork-managed-agents` development Skill from <https://github.com/SerendipityOneInc/zoowork-sdk-skills>. If it is already installed, read and use that copy. Do not clone or reinstall it merely to check for updates. If it is missing, install it once and follow its required deployment guidance.
+Before making ZooWork calls, use the installed `zoowork-managed-agents` Skill or install it once from <https://github.com/SerendipityOneInc/zoowork-sdk-skills> if missing. Do not reinstall it only to check for updates. Read the current `app-kit/README.md` in <https://github.com/SerendipityOneInc/zoowork-quickstarts> before adapting the UI foundation.
 
-The official development Skill teaches Codex or Claude how to deploy. The five fashion Skills in this repository are what run on the ZooWork Agent.
+The official development Skill teaches the coding assistant how to deploy. The five fashion Skills in this repository run on the ZooWork Agent.
 
 ## 3. Ask me for only the ZooWork API key
 
-Check whether `ZOOWORK_API_KEY` is available in the process environment or this repository's local `.env` file. Never print its value.
+Check the environment and ignored `.env` for `ZOOWORK_API_KEY`. Never print it. If missing, ask me to sign in at <https://zoowork.ai/claw-settings?tab=account-api-keys>, create a `zct_...` key, save it myself as `ZOOWORK_API_KEY` in `.env`, and tell you when it is ready without pasting it into chat.
 
-If it is missing, ask me to sign in at <https://zoowork.ai/claw-settings?tab=account-api-keys>, create and copy the one-time `zct_...` secret, save it myself as `ZOOWORK_API_KEY` in the ignored `.env` file, and tell you when it is ready without pasting it into chat.
+Never ask me for an Agent ID or Skill ID. Setup creates or discovers the Agent and stores all identifiers in ignored `.zoowork/` state. Keep the key out of source, logs, artifacts, browser bundles, and Git history.
 
-The API key is the only value I enter manually. Never ask me for an Agent ID. The setup stores the generated ID in ignored `.zoowork/` state. Keep the key out of prompts, source files, logs, artifacts, frontend bundles, and Git history.
-
-## 4. Run the checked-in fast setup
-
-After the key is available, run:
+## 4. Run the fast incremental setup
 
 ```bash
 npm ci
 npm run setup
 ```
 
-Use this checked-in automation instead of writing a new deployment harness. Do not run `npm view`, browse package registries, inspect the entire SDK declaration file, or create replacement setup scripts unless the command fails with a concrete compatibility error.
+Use the checked-in automation. Do not browse package registries or replace the provisioning scripts unless this command fails with a concrete compatibility error.
 
-`npm run setup` must:
+Setup must validate the key, create or reuse one persistent Agent, upload only changed Skill versions, attach only missing Skills, verify that all five are enabled and eligible, start the Agent when needed, wait for `desired_state === 'running'`, and run one English, United States, text-only style-profile turn that proves `fashion-style-profile` was consulted.
 
-1. validate the key with the read-only model catalog;
-2. create or reuse one persistent Agent using saved state, stable labels, and an idempotency key;
-3. package all five Skills correctly and upload only new or changed versions;
-4. attach only missing Skills and verify that all five are enabled and eligible;
-5. start the Agent only when needed and use the documented helper to wait for `desired_state === 'running'`;
-6. run one English, United States, text-only style-profile turn that confirms `fashion-style-profile` triggers;
-7. keep that verification session-only and stop without shopping, weather lookup, outfit building, photo scoring, or image generation.
+The quick verification has a two-minute budget and must remain session-only. Do not shop, call weather services, build an outfit, score a photo, or generate an image. Diagnose a failure without silently escalating into more sessions or an image test.
 
-The quick Runtime verification has a two-minute budget. If it fails, diagnose that failure only. Do not silently escalate into retailer searches, additional sessions, or try-on generation.
+## 5. Build the public UI immediately
 
-## 5. Finish directly in chat
+Continue automatically after verification. Use ZooWork App Kit as the backend and streaming foundation unless a stronger compatible frontend already exists. Preserve its authentication, D1 ownership records, Durable Object execution, refresh-safe streaming, and server-only credential boundary. Build an original product experience with:
 
-When setup succeeds, report:
+- fast text entry without a mandatory onboarding gate;
+- clear product search, complete-look, try-on, outfit-feedback, and preference entry points;
+- product cards with source, USD price, retailer, and direct purchase link fields;
+- a multi-turn conversation and result history that survives refresh;
+- progressive, editable style preferences stored in the application database rather than assumed platform memory;
+- explicit consent and deletion controls for any verified photo workflow; and
+- loading, reconnect, empty, unavailable-inventory, quota, and generation-progress states.
 
-- that Stylist is running on ZooWork Runtime;
-- the automatically generated Agent ID;
-- all five attached Skill names and enabled/eligible status;
-- the quick verification result and elapsed time;
-- that no retailer search, personal-photo processing, or image generation occurred during setup;
-- this exact question: “Would you like to try a real fashion request now, customize the workflow, or build a UI for this Agent?”
+For public deployment:
 
-Do not create an acceptance report, retry assessment, evidence bundle, or Markdown deliverable. The running Agent is the deliverable.
+- set `AGENT_PICKER=off`;
+- keep `ZOOWORK_API_KEY` only in a server-side secret store;
+- keep Agent and Skill IDs out of browser code and never ask the user to enter them;
+- use App Kit's per-user Agent mode, store user-to-Agent and user-to-session ownership in D1, and attach all five org Skills from generated server-side deployment state;
+- never share an agent-scope `/workspace` across unrelated users;
+- use Cloudflare Access or equivalent real authentication and never use `DEV_EMAIL` in production;
+- enforce rate limits, usage limits, bounded retries, and per-user authorization; and
+- do not claim native ZooWork session uploads work: they are not production-wired. Ship a text-first public MVP, and enable private photo upload only after a signed, expiring object-storage bridge is end-to-end verified and temporary objects are deleted.
 
-## 6. Full capability testing is opt-in
+Preview locally and run a text-only UI smoke test, then deploy to an already authenticated provider or use App Kit's Cloudflare Workers path. This prompt already authorizes deployment; do not ask whether to publish. If interactive hosting login is required, ask me only to complete that authorization and continue.
 
-Do not test every fashion Skill during installation. Run product searches, outfit assembly, photo scoring, or virtual try-on only when I explicitly request a full acceptance test or make a real fashion request. Use current United States inventory, USD prices, exact retailer links, private user-photo handling, and at most one bounded image correction. Explain before a full test that retailer verification and image generation can add several minutes and may spend image credits.
+Verify that the public URL loads, authentication is active, a new conversation streams correctly, refresh restores it, session ownership is enforced, and no ZooWork secret appears in client assets or browser network responses.
 
-## 7. UI is opt-in
+## 6. Keep expensive capability tests opt-in
 
-If I ask for a UI, recommend ZooWork App Kit when I have no frontend preference; otherwise adapt my frontend. Keep the API key server-side, pin the saved Agent ID automatically, set `AGENT_PICKER=off`, and keep all copy in English with United States shopping behavior. Support private uploads, multi-turn sessions, refresh recovery, authentication, user isolation, rate limits, usage limits, and explicit consent before saving or sharing photos. Preview locally and ask for approval before public deployment.
+Do not exercise retailer search, outfit assembly, photo scoring, or virtual try-on during installation or UI deployment. Run those only for a real user request or an explicitly requested full acceptance test. Use current United States inventory, USD prices, direct retailer links, private photo handling, and at most one bounded image correction. Explain before testing that external search and image generation may add time and spend credits.
 
-The intended flow is: API key → fast incremental setup → running Runtime Agent → one text-only verification → optional real fashion request, customization, or UI.
+## 7. Finish directly in chat
+
+Return the running setup Agent ID; all five attached Skill names and enabled/eligible status; quick-verification result and elapsed time; confirmation that setup performed no shopping, personal-photo processing, or image generation; the public URL and authentication mode; the UI smoke-test result; and any verified first-release limitation, especially private photo upload status.
+
+Do not create an acceptance report, retry assessment, evidence bundle, or Markdown deliverable instead of the product. The running Agent and public URL are the deliverables.
+
+The intended flow is: API key → fast incremental setup → one text-only verification → secure fashion UI → public URL.
