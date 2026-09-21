@@ -91,6 +91,7 @@ const session = await zc.createSession(state.agentId, {
     idempotency_key: `${runKey}-verify`,
     content: [
       "This is a fast deployment verification for an English-language United States fashion Agent.",
+      "Before answering, open and read the fashion-style-profile skill file (fashion-style-profile/SKILL.md) and follow its principles and profile-field structure in your reply.",
       "My stable preferences are a USD 200 per-item budget, navy and cream colors, United States women's size 8, and no wool.",
       "Summarize which details are suitable for a style profile and state that they remain session-only because no authenticated profile store is available in this test.",
       "Do not save anything, search retailers, check weather, request an image, score an outfit, build a look, or generate a try-on.",
